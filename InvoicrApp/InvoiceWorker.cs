@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -33,16 +34,24 @@ namespace InvoicrApp
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                var response = await _httpClient.GetFromJsonAsync<InvoiceEventResponse>(await InvoiceApiSettings.GenerateUriAsync(), _jsonSerializerOptions, stoppingToken);
-
-                if (response.Items.Any())
+                try
                 {
-                    await InvoiceApiSettings.SaveLastProcessedEventIdAsync(response.Items.Last().Id);
-                    foreach (var invoiceEvent in response.Items)
+                    var response = await _httpClient.GetFromJsonAsync<InvoiceEventResponse>(await InvoiceApiSettings.GenerateUriAsync(), _jsonSerializerOptions, stoppingToken);
+
+                    if (response.Items.Any())
                     {
-                        await _invoiceHandler.ProcessEventAsync(invoiceEvent);
+                        await InvoiceApiSettings.SaveLastProcessedEventIdAsync(response.Items.Last().Id);
+                        foreach (var invoiceEvent in response.Items)
+                        {
+                            await _invoiceHandler.ProcessEventAsync(invoiceEvent);
+                        }
                     }
+                } catch(Exception e)
+                {
+                    // alternative logging
+                    Console.WriteLine(e.ToString());
                 }
+                
             }
         }
     }

@@ -18,6 +18,7 @@ namespace InvoicrApp
         private static readonly string InvoiceFolder = Path.Combine(Directory.GetCurrentDirectory(), "Data", "Invoices");
         private string GetInvoiceFilePath(Guid invoiceId) => Path.Combine(InvoiceFolder, $"Invoice-{invoiceId}.txt");
 
+        private TaxCalculator _taxCalculator = new TaxCalculator();
         public async Task ProcessEventAsync(InvoiceEvent invoiceEvent)
         {
             var lines = new List<string>
@@ -38,6 +39,10 @@ namespace InvoicrApp
                     $"Item total cost: {li.LineItemTotalCost}",
                     Environment.NewLine
                 }));
+
+            var taxLines = _taxCalculator.GenerateTaxLines(invoiceEvent.Content);
+
+            lines.AddRange(taxLines);
 
             Directory.CreateDirectory(InvoiceFolder);
             await File.WriteAllLinesAsync(GetInvoiceFilePath(invoiceEvent.Content.InvoiceId), lines);

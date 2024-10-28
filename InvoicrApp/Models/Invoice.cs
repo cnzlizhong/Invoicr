@@ -7,6 +7,7 @@ namespace InvoicrApp.Models
     {
         public Guid InvoiceId { get; set; }
         public string InvoiceNumber { get; set; }
+        public string Region { get; set; }
         public IEnumerable<InvoiceLineItem> LineItems { get; set; }
         public string Status { get; set; }
         public DateTime DueDateUtc { get; set; }

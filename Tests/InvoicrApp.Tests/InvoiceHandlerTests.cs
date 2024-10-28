@@ -26,6 +26,7 @@ namespace InvoicrApp.Tests
                 {
                     InvoiceId = Guid.NewGuid(),
                     InvoiceNumber = "INV-Test-001",
+                    Region = "NZ",
                     Status = "DRAFT",
                     CreatedDateUtc = new DateTime(2021, 3, 22, 19, 15, 0, DateTimeKind.Utc),
                     DueDateUtc = new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc),
@@ -47,6 +48,11 @@ Item description: Xero Supplier
 Item quantity: 2
 Item cost: 24.25
 Item total cost: 48.5
+
+
+Total amount excluding tax: 42.17
+Total tax amount: 6.33
+Total amount including tax: 48.5
 
 
 ".Replace("\r", "").Replace("\n", Environment.NewLine);
